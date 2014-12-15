@@ -1,0 +1,15 @@
+{
+    "version": "1.0.0",
+    "summary": "Convenience functions for working with Result",
+    "repository": "https://github.com/circuithub/elm-result-extra.git",
+    "license": "MIT",
+    "source-directories": [
+        "src"
+    ],
+    "exposed-modules": [
+        "Result.Extra"
+    ],
+    "dependencies": {
+        "elm-lang/core": "1.0.0 <= v < 2.0.0"
+    }
+}
