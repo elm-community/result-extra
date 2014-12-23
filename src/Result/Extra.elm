@@ -1,5 +1,9 @@
 module Result.Extra where
 {-| Convenience functions for working with Result
+
+# Common Helpers
+@docs isOk, isErr
+
 -}
 
 isOk : Result a e -> Bool
