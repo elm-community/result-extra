@@ -6,12 +6,16 @@ module Result.Extra where
 
 -}
 
-isOk : Result a e -> Bool
+{-| Check whether the result is `Ok` without unwrapping it.
+-}
+isOk : Result e a -> Bool
 isOk x = case x of
           Ok  _ -> True
           Err _ -> False
 
-isErr : Result a e -> Bool
+{-| Check whether the result is `Err` without unwrapping it.
+-}
+isErr : Result e a -> Bool
 isErr x = case x of
             Ok  _ -> False
             Err _ -> True
