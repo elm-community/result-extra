@@ -2,7 +2,7 @@ module Result.Extra where
 {-| Convenience functions for working with Result
 
 # Common Helpers
-@docs isOk, isErr, flatten
+@docs isOk, isErr, extract
 
 -}
 
@@ -23,7 +23,7 @@ isErr x = case x of
 {-| Turn a `Result e a` to an `a`, by applying the conversion
 function specified to the `e`.
 -}
-flatten : (e -> a) -> Result e a -> a
-flatten f x = case x of
+extract : (e -> a) -> Result e a -> a
+extract f x = case x of
                 Ok a -> a
                 Err e -> f e
