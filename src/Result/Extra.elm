@@ -2,7 +2,7 @@ module Result.Extra where
 {-| Convenience functions for working with Result
 
 # Common Helpers
-@docs isOk, isErr, extract, withDefault
+@docs isOk, isErr, extract, withDefault, combine
 
 -}
 
@@ -43,3 +43,8 @@ withDefault default result =
 
         Err _ ->
             default
+
+{-| Combine a list of results into a single result (holding a list).
+-}
+combine : List (Result x a) -> Result x (List a)
+combine = List.foldr (Result.map2 (::)) (Ok [])
