@@ -2,7 +2,7 @@ module Result.Extra where
 {-| Convenience functions for working with Result
 
 # Common Helpers
-@docs isOk, isErr, extract, withDefault, combine
+@docs isOk, isErr, extract, result, withDefault, combine
 
 -}
 
@@ -28,6 +28,17 @@ extract f x = case x of
                 Ok a -> a
                 Err e -> f e
 
+{-| Convert a `Result e a` to a `b` by applying either an error handler or a
+success handler.
+-}
+result : (e -> b) -> (a -> b) -> Result e a -> b
+result onErr onOk result =
+    case result of
+      Ok ok ->
+          onOk ok
+
+      Err err ->
+          onErr err
 
 {-| Returns a `Result`'s contents if the `Result` is an `Ok`,
 or the given default value if the `Result` is an `Err`.
