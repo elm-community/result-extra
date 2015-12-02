@@ -28,17 +28,18 @@ extract f x = case x of
                 Ok a -> a
                 Err e -> f e
 
-{-| Convert a `Result e a` to a `b` by applying either an error handler or a
-success handler.
+{-| Convert a `Result e a` to a `b` by applying either a function
+if the `Result` is an `Err` or a function if the `Result` is `Ok`.
+Both of these functions must return the same type.
 -}
-result : (e -> b) -> (a -> b) -> Result e a -> b
-result onErr onOk result =
+mapBoth : (e -> b) -> (a -> b) -> Result e a -> b
+mapBoth errFunc okFunc result =
     case result of
-      Ok ok ->
-          onOk ok
+        Ok ok ->
+          okFunc ok
 
-      Err err ->
-          onErr err
+        Err err ->
+          errFunc err
 
 {-| Returns a `Result`'s contents if the `Result` is an `Ok`,
 or the given default value if the `Result` is an `Err`.
