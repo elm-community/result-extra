@@ -2,7 +2,7 @@ module Result.Extra where
 {-| Convenience functions for working with Result
 
 # Common Helpers
-@docs isOk, isErr, extract, result, withDefault, combine
+@docs isOk, isErr, extract, mapBoth, withDefault, combine
 
 -}
 
