@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Convenience functions for working with Result",
-    "repository": "https://github.com/elm-community/elm-result-extra.git",
+    "repository": "https://github.com/elm-community/result-extra.git",
     "license": "MIT",
     "source-directories": [
         "src"
