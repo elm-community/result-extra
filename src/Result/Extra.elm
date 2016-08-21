@@ -3,7 +3,7 @@ module Result.Extra exposing (..)
 {-| Convenience functions for working with Result
 
 # Common Helpers
-@docs isOk, isErr, extract, mapBoth, combine, orThen
+@docs isOk, isErr, extract, mapBoth, combine, orElse
 
 -}
 
@@ -70,8 +70,8 @@ combine =
 produce another one. Useful for chaining together a series of
 `Result`-producing functions when you want the first `Ok`.
 -}
-orThen : (a -> Result x b) -> a -> Result x b -> Result x b
-orThen func input res =
+orElse : (a -> Result x b) -> a -> Result x b -> Result x b
+orElse func input res =
     case res of
         Ok _ -> res
         _ -> func input
