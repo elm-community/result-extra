@@ -3,7 +3,7 @@ module Result.Extra exposing (..)
 {-| Convenience functions for working with Result
 
 # Common Helpers
-@docs isOk, isErr, extract, mapBoth, combine
+@docs isOk, isErr, extract, mapBoth, combine, orElse
 
 -}
 
@@ -64,3 +64,14 @@ mapBoth errFunc okFunc result =
 combine : List (Result x a) -> Result x (List a)
 combine =
     List.foldr (Result.map2 (::)) (Ok [])
+
+
+{-| If a `Result` is `Ok`, return it, otherwise call a function to
+produce another one. Useful for chaining together a series of
+`Result`-producing functions when you want the first `Ok`.
+-}
+orElse : (a -> Result x b) -> a -> Result x b -> Result x b
+orElse func input res =
+    case res of
+        Ok _ -> res
+        _ -> func input
