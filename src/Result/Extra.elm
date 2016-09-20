@@ -55,7 +55,7 @@ unwrap defaultValue okFunc result =
         Ok ok ->
             okFunc ok
 
-        Err err ->
+        Err _ ->
             defaultValue
 
 
