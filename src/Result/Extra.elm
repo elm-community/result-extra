@@ -1,9 +1,12 @@
 module Result.Extra exposing (..)
 
-{-| Convenience functions for working with Result
+{-| Convenience functions for working with `Result`.
 
 # Common Helpers
 @docs isOk, isErr, extract, mapBoth, combine
+
+# Alternatives
+@docs or, orLazy, orElseLazy, orElse
 
 -}
 
@@ -64,3 +67,77 @@ mapBoth errFunc okFunc result =
 combine : List (Result x a) -> Result x (List a)
 combine =
     List.foldr (Result.map2 (::)) (Ok [])
+
+
+{-| Like the Boolean `||` this will return the first value that is
+positive (`Ok`). However, unlike with `||`, both values will be
+computed anyway (there is no short-circuiting).
+
+    Ok 4      `or` Ok 5      == Ok 4
+    Err "Oh!" `or` Ok 5      == Ok 5
+    Ok 4      `or` Err "No!" == Ok 4
+    Err "Oh!" `or` Err "No!" == Err "No!"
+
+As the last example line shows, the second error is returned if both
+results are erroneous.
+-}
+or : Result e a -> Result e a -> Result e a
+or ra rb =
+    case ra of
+        Err _ ->
+            rb
+
+        Ok _ ->
+            ra
+
+
+{-| Non-strict version of `or`. The second argument will only be
+evaluated if the first argument is an `Err`.
+-}
+orLazy : Result e a -> (() -> Result e a) -> Result e a
+orLazy ra frb =
+    case ra of
+        Err _ ->
+            frb ()
+
+        Ok _ ->
+            ra
+
+
+{-| Piping-friendly version of `orLazy`. The first argument will only
+be evaluated if the second argument is an `Err`. Example use:
+
+    String.toInt "Hello"
+    |> orElseLazy (\() -> String.toInt "42")
+-}
+orElseLazy : (() -> Result e a) -> Result e a -> Result e a
+orElseLazy fra rb =
+    case rb of
+        Err _ ->
+            fra ()
+
+        Ok _ ->
+            rb
+
+
+{-| Strict version of `orElseLazy` (and at the same time,
+piping-friendly version of `or`).
+
+    orElse (Ok 4)      (Ok 5)      == Ok 5  -- crucial difference from `or`
+    orElse (Err "Oh!") (Ok 5)      == Ok 5
+    orElse (Ok 4)      (Err "No!") == Ok 4
+    orElse (Err "Oh!") (Err "No!") == Err "Oh!"  -- also different from `or`
+
+Also:
+
+    String.toInt "Hello"
+    |> orElse (String.toInt "42")
+-}
+orElse : Result e a -> Result e a -> Result e a
+orElse ra rb =
+    case rb of
+        Err _ ->
+            ra
+
+        Ok _ ->
+            rb
