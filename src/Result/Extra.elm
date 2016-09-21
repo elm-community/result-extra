@@ -46,7 +46,7 @@ extract f x =
 
 
 {-| Convert a `Result e a` to a `b` by applying a function if 
-the `Result` is `Ok` or using the provide default value if it
+the `Result` is `Ok` or using the provided default value if it
 is an `Err`.
 -}
 unwrap : b -> (a -> b) -> Result e a -> b
