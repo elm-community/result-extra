@@ -1,4 +1,17 @@
-module Result.Extra exposing (..)
+module Result.Extra
+    exposing
+        ( isOk
+        , isErr
+        , extract
+        , unwrap
+        , unpack
+        , mapBoth
+        , combine
+        , or
+        , orLazy
+        , orElseLazy
+        , orElse
+        )
 
 {-| Convenience functions for working with `Result`.
 
@@ -48,7 +61,7 @@ extract f x =
             f e
 
 
-{-| Convert a `Result e a` to a `b` by applying a function if 
+{-| Convert a `Result e a` to a `b` by applying a function if
 the `Result` is `Ok` or using the provided default value if it
 is an `Err`.
 -}
@@ -62,8 +75,8 @@ unwrap defaultValue okFunc result =
             defaultValue
 
 
-{-| Convert a `Result e a` to a `b` by applying either the first 
-function if the `Result` is an `Err` or the second function if the 
+{-| Convert a `Result e a` to a `b` by applying either the first
+function if the `Result` is an `Err` or the second function if the
 `Result` is `Ok`. Both of these functions must return the same type.
 -}
 unpack : (e -> b) -> (a -> b) -> Result e a -> b
