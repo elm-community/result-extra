@@ -113,10 +113,10 @@ combine =
 positive (`Ok`). However, unlike with `||`, both values will be
 computed anyway (there is no short-circuiting).
 
-    Ok 4      `or` Ok 5      == Ok 4
-    Err "Oh!" `or` Ok 5      == Ok 5
-    Ok 4      `or` Err "No!" == Ok 4
-    Err "Oh!" `or` Err "No!" == Err "No!"
+    or (Ok 4)      (Ok 5)      == Ok 4
+    or (Err "Oh!") (Ok 5)      == Ok 5
+    or (Ok 4)      (Err "No!") == Ok 4
+    or (Err "Oh!") (Err "No!") == Err "No!"
 
 As the last example line shows, the second error is returned if both
 results are erroneous.
