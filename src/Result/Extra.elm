@@ -11,6 +11,7 @@ module Result.Extra
         , orLazy
         , orElseLazy
         , orElse
+        , flip
         )
 
 {-| Convenience functions for working with `Result`.
@@ -19,7 +20,7 @@ module Result.Extra
 @docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine
 
 # Alternatives
-@docs or, orLazy, orElseLazy, orElse
+@docs or, orLazy, orElseLazy, orElse, flip
 
 -}
 
@@ -181,3 +182,21 @@ orElse ra rb =
 
         Ok _ ->
             rb
+
+{-| Flip the `e` and `a` components of a `Result`.
+Useful for converting an `e` into a `Maybe` `Just e`:
+
+    flip r |> Result.toMaybe
+
+In the example above, when `r` is an `Ok a` the output is `Nothing`,
+and when it's an `Err e` the result is `Just e`, effectively inverting
+the behaviour of `Result.toMaybe`.
+-}
+flip : Result e a -> Result a e
+flip x =
+    case x of
+        Ok a ->
+            Err a
+        
+        Err e ->
+            Ok e
