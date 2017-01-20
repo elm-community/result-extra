@@ -11,6 +11,7 @@ module Result.Extra
         , orLazy
         , orElseLazy
         , orElse
+        , merge
         )
 
 {-| Convenience functions for working with `Result`.
@@ -181,3 +182,28 @@ orElse ra rb =
 
         Ok _ ->
             rb
+
+{-| Eliminate Result when error and success have been mapped to the same
+type, such as a message type.
+
+    merge (Ok 4)   == 4
+    merge (Err -1) == -1
+
+More pragmatically:
+
+    type Msg
+        = UserTypedInt Int
+        | UserInputError String
+
+    msgFromInput : String -> Msg
+    msgFromInput =
+        String.toInt
+        >> Result.mapError UserInputError
+        >> Result.map UserTypedInt
+        >> Result.Extra.merge
+-}
+merge : Result a a -> a
+merge r =
+    case r of
+        Ok rr -> rr
+        Err rr -> rr
