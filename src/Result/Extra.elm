@@ -17,7 +17,7 @@ module Result.Extra
 {-| Convenience functions for working with `Result`.
 
 # Common Helpers
-@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine
+@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge
 
 # Alternatives
 @docs or, orLazy, orElseLazy, orElse
