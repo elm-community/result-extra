@@ -19,6 +19,9 @@ module Result.Extra
 # Common Helpers
 @docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge
 
+# Applying
+@docs singleton, andMap
+
 # Alternatives
 @docs or, orLazy, orElseLazy, orElse
 
@@ -110,6 +113,36 @@ combine =
     List.foldr (Result.map2 (::)) (Ok [])
 
 
+{-| Create a `singleton` from a value to an `Result` with a `Ok`
+of the same type.  Also known as `pure`. You can use the `Err`
+constructor for a singleton of the `Err` variety.
+
+    singleton 2 == Ok 2
+-}
+singleton : a -> Result e a
+singleton =
+    Ok
+
+
+{-| Apply the function that is inside `Result` to a value that is inside
+`Result`. Return the result inside `Result`. If one of the `Result`
+arguments is `Err e`, return `Err e`. Also known as `apply`.
+
+    Err "Oh" |> andMap (Err "No!")   == Err "Oh"
+    Err "Oh" |> andMap (Ok 2)        == Err "Oh"
+    Ok ((+) 1) |> andMap (Err "No!") == Err "No!"
+    Ok ((+) 1) |> andMap (Ok 2)      == Ok 3
+-}
+andMap : Result e a -> Result e (a -> b) -> Result e b
+andMap ra rb =
+    case ( ra, rb ) of
+        ( _, Err x ) ->
+            Err x
+
+        ( o, Ok fn ) ->
+            map fn o
+
+
 {-| Like the Boolean `||` this will return the first value that is
 positive (`Ok`). However, unlike with `||`, both values will be
 computed anyway (there is no short-circuiting).
@@ -183,6 +216,7 @@ orElse ra rb =
         Ok _ ->
             rb
 
+
 {-| Eliminate Result when error and success have been mapped to the same
 type, such as a message type.
 
@@ -205,5 +239,8 @@ More pragmatically:
 merge : Result a a -> a
 merge r =
     case r of
-        Ok rr -> rr
-        Err rr -> rr
+        Ok rr ->
+            rr
+
+        Err rr ->
+            rr
