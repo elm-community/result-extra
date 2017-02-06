@@ -7,6 +7,8 @@ module Result.Extra
         , unpack
         , mapBoth
         , combine
+        , singleton
+        , andMap
         , or
         , orLazy
         , orElseLazy
@@ -140,7 +142,7 @@ andMap ra rb =
             Err x
 
         ( o, Ok fn ) ->
-            map fn o
+            Result.map fn o
 
 
 {-| Like the Boolean `||` this will return the first value that is
