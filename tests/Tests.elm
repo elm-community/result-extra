@@ -2,6 +2,7 @@ module Tests exposing (..)
 
 import Test exposing (..)
 import Expect
+import Task
 import Result.Extra exposing (..)
 
 
@@ -24,5 +25,11 @@ all =
             , test "andMap Ok Ok" <|
                 \() ->
                     Expect.equal (Ok ((+) 1) |> andMap (Ok 2)) (Ok 3)
+            , test "toTask Ok" <|
+                \() ->
+                    Expect.equal (toTask (Ok 4)) (Task.succeed 4)
+            , test "toTask Err" <|
+                \() ->
+                    Expect.equal (toTask (Err "Oh")) (Task.fail "Oh")
             ]
         ]
