@@ -2,6 +2,7 @@ module Tests exposing (..)
 
 import Expect
 import Result.Extra exposing (..)
+import Task
 import Test exposing (..)
 
 
@@ -36,5 +37,11 @@ all =
             , test "partition [Ok, Err, Ok]" <|
                 \_ ->
                     Expect.equal (partition [ Ok 99, Err "Nope", Ok -5 ]) ( [ 99, -5 ], [ "Nope" ] )
+            , test "toTask Ok" <|
+                \_ ->
+                    Expect.equal (toTask (Ok 4)) (Task.succeed 4)
+            , test "toTask Err" <|
+                \_ ->
+                    Expect.equal (toTask (Err "Oh")) (Task.fail "Oh")
             ]
         ]
