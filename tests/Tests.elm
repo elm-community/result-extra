@@ -24,5 +24,8 @@ all =
             , test "andMap Ok Ok" <|
                 \() ->
                     Expect.equal (Ok ((+) 1) |> andMap (Ok 2)) (Ok 3)
+            , test "forceExtract Ok" <|
+                \() ->
+                    Expect.equal (2) (forceExtract <| Ok 2)
             ]
         ]
