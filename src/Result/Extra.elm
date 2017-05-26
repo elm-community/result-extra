@@ -71,8 +71,13 @@ extract f x =
 {-| Extract a value `a` from a `Result _ a` or crash
 -}
 forceExtract : Result e a -> a
-forceExtract =
-    extract (Debug.crash "forceExtract on (Err e)")
+forceExtract x =
+    case x of
+        Ok a ->
+            a
+
+        Err _ ->
+            Debug.crash "force unwrapping failed"
 
 
 {-| Convert a `Result e a` to a `b` by applying a function if
