@@ -3,6 +3,7 @@ module Result.Extra
         ( isOk
         , isErr
         , extract
+        , forceExtract
         , unwrap
         , unpack
         , mapBoth
@@ -19,7 +20,7 @@ module Result.Extra
 {-| Convenience functions for working with `Result`.
 
 # Common Helpers
-@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge
+@docs isOk, isErr, extract, forceExtract, unwrap, unpack, mapBoth, combine, merge
 
 # Applying
 @docs singleton, andMap
@@ -65,6 +66,13 @@ extract f x =
 
         Err e ->
             f e
+
+
+{-| Extract a value `a` from a `Result _ a` or crash
+-}
+forceExtract : Result e a -> a
+forceExtract =
+    extract (Debug.crash "forceExtract on (Err e)")
 
 
 {-| Convert a `Result e a` to a `b` by applying a function if
