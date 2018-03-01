@@ -1,5 +1,5 @@
 module Result.Extra exposing
-    ( isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge, partition
+    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, partition
     , singleton, andMap
     , or, orLazy, orElseLazy, orElse
     )
@@ -9,7 +9,7 @@ module Result.Extra exposing
 
 # Common Helpers
 
-@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge, partition
+@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, partition
 
 
 # Applying
@@ -87,6 +87,25 @@ unpack errFunc okFunc result =
 
         Err err ->
             errFunc err
+
+
+{-| Convert to a Maybe containing the error, if there is one.
+
+    parseInt : String -> Result ParseError Int
+
+    maybeParseError : String -> Maybe ParseError
+    maybeParseError string =
+        error (parseInt string)
+
+-}
+error : Result e a -> Maybe e
+error result =
+    case result of
+        Ok _ ->
+            Nothing
+
+        Err error ->
+            Just error
 
 
 {-| Apply the first argument function to an `Err` and the second
