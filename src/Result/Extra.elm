@@ -2,6 +2,7 @@ module Result.Extra
     exposing
         ( isOk
         , isErr
+        , error
         , extract
         , unwrap
         , unpack
@@ -19,7 +20,7 @@ module Result.Extra
 {-| Convenience functions for working with `Result`.
 
 # Common Helpers
-@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge
+@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge
 
 # Applying
 @docs singleton, andMap
@@ -93,6 +94,25 @@ unpack errFunc okFunc result =
 
         Err err ->
             errFunc err
+
+
+{-| Convert to a Maybe containing the error, if there is one.
+
+    parseInt : String -> Result ParseError Int
+
+    maybeParseError : String -> Maybe ParseError
+    maybeParseError string =
+        error (parseInt string)
+
+-}
+error : Result e a -> Maybe e
+error result =
+    case result of
+        Ok _ ->
+            Nothing
+
+        Err error ->
+            Just error
 
 
 {-| Apply the first argument function to an `Err` and the second
