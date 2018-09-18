@@ -1,33 +1,66 @@
 module Result.Extra
     exposing
-        ( isOk
-        , isErr
-        , extract
-        , unwrap
-        , unpack
-        , mapBoth
+        ( andMap
         , combine
-        , singleton
-        , andMap
-        , or
-        , orLazy
-        , orElseLazy
-        , orElse
+        , combineBoth
+        , combineFirst
+        , combineMap
+        , combineMapBoth
+        , combineMapFirst
+        , combineMapSecond
+        , combineSecond
+        , extract
+        , isErr
+        , isOk
+        , join
+        , mapBoth
         , merge
+        , or
+        , orElse
+        , orElseLazy
+        , orLazy
+        , singleton
+        , unpack
+        , unwrap
         )
 
 {-| Convenience functions for working with `Result`.
 
-# Common Helpers
-@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge
+
+# Packing and unpacking
+
+@docs isOk, isErr, extract, unwrap, unpack, mapBoth, merge, join
+
+
+# Combining multiple results
+
+
+## In lists
+
+@docs combine, combineMap
+
+
+## In tuples
+
+@docs combineFirst, combineSecond, combineBoth, combineMapFirst, combineMapSecond, combineMapBoth
+
 
 # Applying
+
 @docs singleton, andMap
 
+
 # Alternatives
+
 @docs or, orLazy, orElseLazy, orElse
 
 -}
+
+import Basics.Extra exposing (flip)
+
+
+
+-- UNPACKING --
 
 
 {-| Check whether the result is `Ok` without unwrapping it.
@@ -108,18 +141,108 @@ mapBoth errFunc okFunc result =
             Err <| errFunc err
 
 
+
+-- TRAVERSABLE --
+
+
 {-| Combine a list of results into a single result (holding a list).
+Also known as `sequence` on lists.
 -}
 combine : List (Result x a) -> Result x (List a)
 combine =
     List.foldr (Result.map2 (::)) (Ok [])
 
 
+{-| Map a function producing results on a list
+and combine those into a single result (holding a list).
+Also known as `traverse` on lists.
+
+    combineMap f xs == combine (List.map f xs)
+
+-}
+combineMap : (a -> Result x b) -> List a -> Result x (List b)
+combineMap f =
+    combine << List.map f
+
+
+{-| Pull a result out of the _first_ element of a tuple
+and combine it into a result holding the tuple's values.
+-}
+combineFirst : ( Result x a, c ) -> Result x ( a, c )
+combineFirst ( rx, y ) =
+    Result.map (flip Tuple.pair y) rx
+
+
+{-| Pull a result out of the _second_ element of a tuple
+and combine it into a result holding the tuple's values.
+Also known as `sequence` on tuples.
+-}
+combineSecond : ( c, Result x a ) -> Result x ( c, a )
+combineSecond ( x, ry ) =
+    Result.map (Tuple.pair x) ry
+
+
+{-| Combine all results in a tuple
+into a single result holding the tuple's values.
+Also know as `bisequence` on tuples.
+-}
+combineBoth : ( Result x a, Result x b ) -> Result x ( a, b )
+combineBoth ( rx, ry ) =
+    Result.map2 Tuple.pair rx ry
+
+
+{-| Map a function producing results on the _first_ element of a tuple
+and then pull it out using `combineFirst`.
+Also know as `sequence` on tuples.
+
+    combineMapFirst f ( x, y )
+        == combineFirst (Tuple.mapFirst f ( x, y ))
+        == Result.map (flip Tuple.pair y) (f x)
+
+-}
+combineMapFirst : (a -> Result x b) -> ( a, c ) -> Result x ( b, c )
+combineMapFirst f =
+    combineFirst << Tuple.mapFirst f
+
+
+{-| Map a function producing results on the _second_ element of a tuple
+and then pull it out using `combineSecond`.
+Also know as `traverse` on tuples.
+
+    combineMapSecond f ( x, y )
+        == combineSecond (Tuple.mapSecond f ( x, y ))
+        == Result.map (Tuple.pair x) (f y)
+
+-}
+combineMapSecond : (a -> Result x b) -> ( c, a ) -> Result x ( c, b )
+combineMapSecond f =
+    combineSecond << Tuple.mapSecond f
+
+
+{-| Map a function producing results on the _both_ elements of a tuple
+and then pull them out using `combineBoth`.
+Also know as `bitraverse` on tuples.
+
+    combineMapBoth f g ( x, y )
+        == combineBoth (Tuple.mapBoth f g ( x, y ))
+        == Result.map2 Tuple.pair (f x) (g y)
+
+-}
+combineMapBoth : (a -> Result x c) -> (b -> Result x d) -> ( a, b ) -> Result x ( c, d )
+combineMapBoth f g =
+    combineBoth << Tuple.mapBoth f g
+
+
+
+-- APPLICATIVE --
+
+
 {-| Create a `singleton` from a value to an `Result` with a `Ok`
-of the same type.  Also known as `pure`. You can use the `Err`
+of the same type. Also known as `pure`. You can use the `Err`
 constructor for a singleton of the `Err` variety.
 
     singleton 2 == Ok 2
+
 -}
 singleton : a -> Result e a
 singleton =
@@ -134,6 +257,7 @@ arguments is `Err e`, return `Err e`. Also known as `apply`.
     Err "Oh" |> andMap (Ok 2)        == Err "Oh"
     Ok ((+) 1) |> andMap (Err "No!") == Err "No!"
     Ok ((+) 1) |> andMap (Ok 2)      == Ok 3
+
 -}
 andMap : Result e a -> Result e (a -> b) -> Result e b
 andMap ra rb =
@@ -143,6 +267,10 @@ andMap ra rb =
 
         ( o, Ok fn ) ->
             Result.map fn o
+
+
+
+-- ALTERNATIVE --
 
 
 {-| Like the Boolean `||` this will return the first value that is
@@ -156,6 +284,7 @@ computed anyway (there is no short-circuiting).
 
 As the last example line shows, the second error is returned if both
 results are erroneous.
+
 -}
 or : Result e a -> Result e a -> Result e a
 or ra rb =
@@ -185,6 +314,7 @@ be evaluated if the second argument is an `Err`. Example use:
 
     String.toInt "Hello"
     |> orElseLazy (\() -> String.toInt "42")
+
 -}
 orElseLazy : (() -> Result e a) -> Result e a -> Result e a
 orElseLazy fra rb =
@@ -208,6 +338,7 @@ Also:
 
     String.toInt "Hello"
     |> orElse (String.toInt "42")
+
 -}
 orElse : Result e a -> Result e a -> Result e a
 orElse ra rb =
@@ -217,6 +348,10 @@ orElse ra rb =
 
         Ok _ ->
             rb
+
+
+
+-- OTHER --
 
 
 {-| Eliminate Result when error and success have been mapped to the same
@@ -234,9 +369,10 @@ More pragmatically:
     msgFromInput : String -> Msg
     msgFromInput =
         String.toInt
-        >> Result.mapError UserInputError
-        >> Result.map UserTypedInt
-        >> Result.Extra.merge
+            >> Result.mapError UserInputError
+            >> Result.map UserTypedInt
+            >> Result.Extra.merge
+
 -}
 merge : Result a a -> a
 merge r =
@@ -246,3 +382,24 @@ merge r =
 
         Err rr ->
             rr
+
+
+{-| Join contained results with the same error into one result.
+
+Usefull if you have a "result in a result":
+
+    join <| Ok (Ok 4) == Ok 4
+    join <| Ok (Err "message") == Err "message"
+
+-}
+join : Result x (Result x a) -> Result x a
+join r =
+    case r of
+        Err x ->
+            Err x
+
+        Ok (Err x) ->
+            Err x
+
+        Ok (Ok a) ->
+            Ok a
