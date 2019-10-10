@@ -14,12 +14,13 @@ module Result.Extra
         , orElseLazy
         , orElse
         , merge
+        , partition
         )
 
 {-| Convenience functions for working with `Result`.
 
 # Common Helpers
-@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge
+@docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge, partition
 
 # Applying
 @docs singleton, andMap
@@ -246,3 +247,21 @@ merge r =
 
         Err rr ->
             rr
+
+{-| Partition a list of Results into two lists of values (successes
+and failures), much as List.partition takes a predicate and splits
+a list based on whether the predicate indicates success or failure.
+
+    partition (Ok 4, Err "no", Err "hi")         == ([4], ["no", "hi"])
+    partition (Err 7.1, Ok 'k', Err 9.0, Ok 'p') == (['k', 'p'], [7.1, 9.0])
+-}
+partition : List (Result e a) -> (List a, List e)
+partition rs =
+    List.foldr (\r (succ,err) ->
+        case r of
+            Ok v ->
+                (v::succ, err)
+
+            Err v ->
+                (succ, v::err)
+    ) ([],[]) rs
