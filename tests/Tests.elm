@@ -1,8 +1,8 @@
 module Tests exposing (..)
 
-import Test exposing (..)
 import Expect
 import Result.Extra exposing (..)
+import Test exposing (..)
 
 
 all : Test
@@ -26,15 +26,15 @@ all =
                     Expect.equal (Ok ((+) 1) |> andMap (Ok 2)) (Ok 3)
             , test "partition []" <|
                 \_ ->
-                    Expect.equal (partition []) ([], [])
+                    Expect.equal (partition []) ( [], [] )
             , test "partition [Ok]" <|
                 \_ ->
-                    Expect.equal (partition [Ok 99]) ([99], [])
+                    Expect.equal (partition [ Ok 99 ]) ( [ 99 ], [] )
             , test "partition [Err]" <|
                 \_ ->
-                    Expect.equal (partition [Err 99]) ([], [99])
+                    Expect.equal (partition [ Err 99 ]) ( [], [ 99 ] )
             , test "partition [Ok, Err, Ok]" <|
                 \_ ->
-                    Expect.equal (partition [Ok 99, Err "Nope", Ok -5]) ([99, -5], ["Nope"])
+                    Expect.equal (partition [ Ok 99, Err "Nope", Ok -5 ]) ( [ 99, -5 ], [ "Nope" ] )
             ]
         ]

@@ -1,31 +1,24 @@
-module Result.Extra
-    exposing
-        ( isOk
-        , isErr
-        , extract
-        , unwrap
-        , unpack
-        , mapBoth
-        , combine
-        , singleton
-        , andMap
-        , or
-        , orLazy
-        , orElseLazy
-        , orElse
-        , merge
-        , partition
-        )
+module Result.Extra exposing
+    ( isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge, partition
+    , singleton, andMap
+    , or, orLazy, orElseLazy, orElse
+    )
 
 {-| Convenience functions for working with `Result`.
 
+
 # Common Helpers
+
 @docs isOk, isErr, extract, unwrap, unpack, mapBoth, combine, merge, partition
 
+
 # Applying
+
 @docs singleton, andMap
 
+
 # Alternatives
+
 @docs or, orLazy, orElseLazy, orElse
 
 -}
@@ -117,10 +110,11 @@ combine =
 
 
 {-| Create a `singleton` from a value to an `Result` with a `Ok`
-of the same type.  Also known as `pure`. You can use the `Err`
+of the same type. Also known as `pure`. You can use the `Err`
 constructor for a singleton of the `Err` variety.
 
     singleton 2 == Ok 2
+
 -}
 singleton : a -> Result e a
 singleton =
@@ -131,10 +125,14 @@ singleton =
 `Result`. Return the result inside `Result`. If one of the `Result`
 arguments is `Err e`, return `Err e`. Also known as `apply`.
 
-    Err "Oh" |> andMap (Err "No!")   == Err "Oh"
-    Err "Oh" |> andMap (Ok 2)        == Err "Oh"
+    Err "Oh" |> andMap (Err "No!") == Err "Oh"
+
+    Err "Oh" |> andMap (Ok 2) == Err "Oh"
+
     Ok ((+) 1) |> andMap (Err "No!") == Err "No!"
-    Ok ((+) 1) |> andMap (Ok 2)      == Ok 3
+
+    Ok ((+) 1) |> andMap (Ok 2) == Ok 3
+
 -}
 andMap : Result e a -> Result e (a -> b) -> Result e b
 andMap ra rb =
@@ -150,13 +148,17 @@ andMap ra rb =
 positive (`Ok`). However, unlike with `||`, both values will be
 computed anyway (there is no short-circuiting).
 
-    or (Ok 4)      (Ok 5)      == Ok 4
-    or (Err "Oh!") (Ok 5)      == Ok 5
-    or (Ok 4)      (Err "No!") == Ok 4
+    or (Ok 4) (Ok 5) == Ok 4
+
+    or (Err "Oh!") (Ok 5) == Ok 5
+
+    or (Ok 4) (Err "No!") == Ok 4
+
     or (Err "Oh!") (Err "No!") == Err "No!"
 
 As the last example line shows, the second error is returned if both
 results are erroneous.
+
 -}
 or : Result e a -> Result e a -> Result e a
 or ra rb =
@@ -185,7 +187,8 @@ orLazy ra frb =
 be evaluated if the second argument is an `Err`. Example use:
 
     String.toInt "Hello"
-    |> orElseLazy (\() -> String.toInt "42")
+        |> orElseLazy (\() -> String.toInt "42")
+
 -}
 orElseLazy : (() -> Result e a) -> Result e a -> Result e a
 orElseLazy fra rb =
@@ -200,15 +203,19 @@ orElseLazy fra rb =
 {-| Strict version of `orElseLazy` (and at the same time,
 piping-friendly version of `or`).
 
-    orElse (Ok 4)      (Ok 5)      == Ok 5  -- crucial difference from `or`
-    orElse (Err "Oh!") (Ok 5)      == Ok 5
-    orElse (Ok 4)      (Err "No!") == Ok 4
-    orElse (Err "Oh!") (Err "No!") == Err "Oh!"  -- also different from `or`
+    orElse (Ok 4) (Ok 5) == Ok 5 -- crucial difference from `or`
+
+    orElse (Err "Oh!") (Ok 5) == Ok 5
+
+    orElse (Ok 4) (Err "No!") == Ok 4
+
+    orElse (Err "Oh!") (Err "No!") == Err "Oh!" -- also different from `or`
 
 Also:
 
     String.toInt "Hello"
-    |> orElse (String.toInt "42")
+        |> orElse (String.toInt "42")
+
 -}
 orElse : Result e a -> Result e a -> Result e a
 orElse ra rb =
@@ -223,7 +230,8 @@ orElse ra rb =
 {-| Eliminate Result when error and success have been mapped to the same
 type, such as a message type.
 
-    merge (Ok 4)   == 4
+    merge (Ok 4) == 4
+
     merge (Err -1) == -1
 
 More pragmatically:
@@ -235,9 +243,10 @@ More pragmatically:
     msgFromInput : String -> Msg
     msgFromInput =
         String.toInt
-        >> Result.mapError UserInputError
-        >> Result.map UserTypedInt
-        >> Result.Extra.merge
+            >> Result.mapError UserInputError
+            >> Result.map UserTypedInt
+            >> Result.Extra.merge
+
 -}
 merge : Result a a -> a
 merge r =
@@ -248,20 +257,26 @@ merge r =
         Err rr ->
             rr
 
+
 {-| Partition a list of Results into two lists of values (successes
 and failures), much as List.partition takes a predicate and splits
 a list based on whether the predicate indicates success or failure.
 
-    partition (Ok 4, Err "no", Err "hi")         == ([4], ["no", "hi"])
-    partition (Err 7.1, Ok 'k', Err 9.0, Ok 'p') == (['k', 'p'], [7.1, 9.0])
--}
-partition : List (Result e a) -> (List a, List e)
-partition rs =
-    List.foldr (\r (succ,err) ->
-        case r of
-            Ok v ->
-                (v::succ, err)
+    partition ( Ok 4, Err "no", Err "hi" ) == ( [ 4 ], [ "no", "hi" ] )
 
-            Err v ->
-                (succ, v::err)
-    ) ([],[]) rs
+    partition ( Err 7.1, Ok 'k', Err 9.0, Ok 'p' ) == ( [ 'k', 'p' ], [ 7.1, 9.0 ] )
+
+-}
+partition : List (Result e a) -> ( List a, List e )
+partition rs =
+    List.foldr
+        (\r ( succ, err ) ->
+            case r of
+                Ok v ->
+                    ( v :: succ, err )
+
+                Err v ->
+                    ( succ, v :: err )
+        )
+        ( [], [] )
+        rs
