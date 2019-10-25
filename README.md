@@ -1,17 +1,28 @@
 # Convenience functions for working with Result
-Experimental package with convenience functions for working with Result.
-Note that this API is experimental and likely to go through many more iterations.
+
+This package contains convenience functions for working with the `Result` type.
+
+You may want to import this module directly into the `Result` namespace:
+
+```elm
+import Result.Extra as Result
+```
+
+Then you can use the included functions similarly to the `Result` module in
+`elm/core`. E.g., `Result.singleton 5` or `Result.isOk someResultValue`.
+
 
 Feedback and contributions are very welcome.
 
-Contributing
-------------
+
+## Contributing
 
 Pull requests are welcome. If you want to talk to us, join us on the
-`#elm-community` channels on the [Elm Slack](https://elmlang.slack.com).
+`#elm-community` channel on the [Elm Slack](https://elmlang.slack.com). You can
+reach the maintainer at @Lysergia on slack, or @prikhi on github.
 
-License
--------
+
+## License
 
 The source code for this package is released under the terms of the MIT
 license. See the `LICENSE` file.
