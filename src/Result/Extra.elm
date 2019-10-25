@@ -219,12 +219,7 @@ be evaluated if the second argument is an `Err`. Example use:
 -}
 orElseLazy : (() -> Result e a) -> Result e a -> Result e a
 orElseLazy fra rb =
-    case rb of
-        Err _ ->
-            fra ()
-
-        Ok _ ->
-            rb
+    orLazy rb fra
 
 
 {-| Strict version of `orElseLazy` (and at the same time,
@@ -246,12 +241,7 @@ Also:
 -}
 orElse : Result e a -> Result e a -> Result e a
 orElse ra rb =
-    case rb of
-        Err _ ->
-            ra
-
-        Ok _ ->
-            rb
+    or rb ra
 
 
 {-| Eliminate Result when error and success have been mapped to the same
