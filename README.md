@@ -1,5 +1,8 @@
 # Convenience functions for working with Result
 
+[![result-extra Build Status](https://travis-ci.org/elm-community/result-extra.svg?branch=master)](https://travis-ci.org/elm-community/result-extra)
+
+
 This package contains convenience functions for working with the `Result` type.
 
 You may want to import this module directly into the `Result` namespace:
