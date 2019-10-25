@@ -104,8 +104,8 @@ error result =
         Ok _ ->
             Nothing
 
-        Err error ->
-            Just error
+        Err err ->
+            Just err
 
 
 {-| Apply the first argument function to an `Err` and the second
