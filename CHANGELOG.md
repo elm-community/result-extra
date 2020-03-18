@@ -2,7 +2,7 @@
 
 ## v2.4.0
 
-* Add additinal `combine...` functions for mapping & pulling `Result` values
+* Add additional `combine...` functions for mapping & pulling `Result` values
   out of lists and tuples.
 * Add a `join` function for merging nested `Result` values.
 * Add a `filter` function for validating an `Ok` value or returning an `Err`.
