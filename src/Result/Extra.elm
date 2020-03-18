@@ -1,6 +1,6 @@
 module Result.Extra exposing
-    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, join, partition, filter
-    , combineMap, combineFirst, combineSecond, combineBoth, combineMapFirst, combineMapSecond, combineMapBoth
+    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, merge, join, partition, filter
+    , combine, combineMap, combineFirst, combineSecond, combineBoth, combineMapFirst, combineMapSecond, combineMapBoth
     , singleton, andMap
     , or, orLazy, orElseLazy, orElse
     , toTask
@@ -11,7 +11,7 @@ module Result.Extra exposing
 
 # Common Helpers
 
-@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, join, partition, filter
+@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, merge, join, partition, filter
 
 
 # Combining
