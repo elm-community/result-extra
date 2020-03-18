@@ -2,4 +2,4 @@
 
 language: elm
 node_js: '12'
-elm-format: 0.8.2
+elm-format: 0.8.3
