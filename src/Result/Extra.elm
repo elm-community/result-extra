@@ -299,7 +299,8 @@ partition rs =
         rs
 
 
-{-| Take a `Result` and a predicate function and return a `Result` with the original value when a predicate matches.
+{-| Take a `Result` and a predicate function and return a `Result` with the
+original value when a predicate matches.
 
     filter "is not 1" (\v -> v == 1) (Ok 1) == Ok 1
 

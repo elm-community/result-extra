@@ -84,6 +84,7 @@ commonHelperTests =
                 Expect.equal (merge <| Err 42) 42
         , combineTests
         , partitionTests
+        , filterTests
         ]
 
 
@@ -129,16 +130,6 @@ partitionTests =
         ]
 
 
-applyingTests : Test
-applyingTests =
-    describe "Applying"
-        [ test "singleton" <|
-            \_ ->
-                Expect.equal (singleton 42) (Ok 42)
-        , andMapTests
-        ]
-
-
 filterTests : Test
 filterTests =
     describe "filter"
@@ -157,6 +148,16 @@ filterTests =
                 Ok 2
                     |> filter "is not 1" ((==) 1)
                     |> Expect.equal (Err "is not 1")
+        ]
+
+
+applyingTests : Test
+applyingTests =
+    describe "Applying"
+        [ test "singleton" <|
+            \_ ->
+                Expect.equal (singleton 42) (Ok 42)
+        , andMapTests
         ]
 
 

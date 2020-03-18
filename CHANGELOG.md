@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## master
+
+* Add a `filter` function for validating an `Ok` value or returning an `Err`.
+
+
 ## v2.3.0
 
 * Improve test coverage.
