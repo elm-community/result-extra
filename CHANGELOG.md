@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## master
+## v2.4.0
 
 * Add additinal `combine...` functions for mapping & pulling `Result` values
   out of lists and tuples.
