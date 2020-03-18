@@ -7,6 +7,7 @@ import Result.Extra
         , combine
         , error
         , extract
+        , filter
         , isErr
         , isOk
         , mapBoth
@@ -135,6 +136,27 @@ applyingTests =
             \_ ->
                 Expect.equal (singleton 42) (Ok 42)
         , andMapTests
+        ]
+
+
+filterTests : Test
+filterTests =
+    describe "filter"
+        [ test "err is ignored" <|
+            \_ ->
+                Err "previous error"
+                    |> filter "is not 1" ((==) 1)
+                    |> Expect.equal (Err "previous error")
+        , test "ok passes filter" <|
+            \_ ->
+                Ok 1
+                    |> filter "is not 1" ((==) 1)
+                    |> Expect.equal (Ok 1)
+        , test "ok filtered out" <|
+            \() ->
+                Ok 2
+                    |> filter "is not 1" ((==) 1)
+                    |> Expect.equal (Err "is not 1")
         ]
 
 

@@ -1,5 +1,5 @@
 module Result.Extra exposing
-    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, partition
+    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, partition, filter
     , singleton, andMap
     , or, orLazy, orElseLazy, orElse
     , toTask
@@ -10,7 +10,7 @@ module Result.Extra exposing
 
 # Common Helpers
 
-@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, partition
+@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, combine, merge, partition, filter
 
 
 # Applying
@@ -297,6 +297,26 @@ partition rs =
         )
         ( [], [] )
         rs
+
+
+{-| Take a `Result` and a predicate function and return a `Result` with the original value when a predicate matches.
+
+    filter "is not 1" (\v -> v == 1) (Ok 1) == Ok 1
+
+    filter "is not 2" (\v -> v == 2) (Ok 1) == Err "is not 2"
+
+-}
+filter : e -> (a -> Bool) -> Result e a -> Result e a
+filter err predicate result =
+    case Result.map predicate result of
+        Ok True ->
+            result
+
+        Ok False ->
+            Err err
+
+        Err _ ->
+            result
 
 
 {-| Convert a `Result` to a `Task` that will fail or succeed immediately.
