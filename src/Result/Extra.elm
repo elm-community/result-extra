@@ -1,5 +1,5 @@
 module Result.Extra exposing
-    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, merge, join, partition, filter
+    ( isOk, isErr, extract, unwrap, unpack, error, mapBoth, merge, join, partition, filter, transpose
     , combine, combineMap, combineFirst, combineSecond, combineBoth, combineMapFirst, combineMapSecond, combineMapBoth
     , singleton, andMap
     , or, orLazy, orElseLazy, orElse
@@ -11,7 +11,7 @@ module Result.Extra exposing
 
 # Common Helpers
 
-@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, merge, join, partition, filter
+@docs isOk, isErr, extract, unwrap, unpack, error, mapBoth, merge, join, partition, filter, transpose
 
 
 # Combining
@@ -443,6 +443,29 @@ filter err predicate result =
 
         Err _ ->
             result
+
+
+{-| Pull out a Result from a Maybe.
+
+    transpose Nothing =
+        Ok Nothing
+    transpose (Just (Ok "value")) =
+        Ok (Just "value")
+    transpose (Just (Err "error")) =
+        Err "error"
+
+-}
+transpose : Maybe (Result e a) -> Result e (Maybe a)
+transpose maybeOfResult =
+    case maybeOfResult of
+        Nothing ->
+            Ok Nothing
+
+        Just (Err err) ->
+            Err err
+
+        Just (Ok value) ->
+            Ok (Just value)
 
 
 

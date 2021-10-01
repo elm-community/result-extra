@@ -28,6 +28,7 @@ import Result.Extra
         , partition
         , singleton
         , toTask
+        , transpose
         , unwrap
         )
 import Task
@@ -103,6 +104,7 @@ commonHelperTests =
                 Expect.equal (join <| Err 42) (Err 42)
         , partitionTests
         , filterTests
+        , transposeTests
         ]
 
 
@@ -142,6 +144,27 @@ filterTests =
                 Ok 2
                     |> filter "is not 1" ((==) 1)
                     |> Expect.equal (Err "is not 1")
+        ]
+
+
+transposeTests : Test
+transposeTests =
+    describe "transpose"
+        [ test "Nothing" <|
+            \_ ->
+                Nothing
+                    |> transpose
+                    |> Expect.equal (Ok Nothing)
+        , test "Just Ok" <|
+            \_ ->
+                Just (Ok 1)
+                    |> transpose
+                    |> Expect.equal (Ok (Just 1))
+        , test "Just Err" <|
+            \() ->
+                Just (Err 2)
+                    |> transpose
+                    |> Expect.equal (Err 2)
         ]
 
 
