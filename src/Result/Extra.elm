@@ -393,11 +393,8 @@ join r =
         Err x ->
             Err x
 
-        Ok (Err x) ->
-            Err x
-
-        Ok (Ok a) ->
-            Ok a
+        Ok a ->
+            a
 
 
 {-| Partition a list of Results into two lists of values (successes
