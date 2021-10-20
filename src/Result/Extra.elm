@@ -143,8 +143,24 @@ mapBoth errFunc okFunc result =
 Also known as `sequence` on lists.
 -}
 combine : List (Result x a) -> Result x (List a)
-combine =
-    List.foldr (Result.map2 (::)) (Ok [])
+combine list =
+    combineHelp list []
+        |> Result.map List.reverse
+
+
+combineHelp : List (Result x a) -> List a -> Result x (List a)
+combineHelp list acc =
+    case list of
+        head :: tail ->
+            case head of
+                Ok a ->
+                    combineHelp tail (a :: acc)
+
+                Err x ->
+                    Err x
+
+        [] ->
+            Ok acc
 
 
 {-| Map a function producing results on a list
