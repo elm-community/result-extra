@@ -191,7 +191,7 @@ Also know as `sequence` on tuples.
 
     combineMapFirst f ( x, y )
         == combineFirst (Tuple.mapFirst f ( x, y ))
-        == Result.map (flip Tuple.pair y) (f x)
+        == Result.map (\newX -> ( newX, y )) (f x)
 
 -}
 combineMapFirst : (a -> Result x b) -> ( a, c ) -> Result x ( b, c )
