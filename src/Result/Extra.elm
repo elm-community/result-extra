@@ -434,12 +434,13 @@ original value when a predicate matches.
 -}
 filter : e -> (a -> Bool) -> Result e a -> Result e a
 filter err predicate result =
-    case Result.map predicate result of
-        Ok True ->
-            result
+    case result of
+        Ok a ->
+            if predicate a then
+                result
 
-        Ok False ->
-            Err err
+            else
+                Err err
 
         Err _ ->
             result
