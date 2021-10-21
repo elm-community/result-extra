@@ -145,7 +145,7 @@ Also known as `sequence` on lists.
 combine : List (Result x a) -> Result x (List a)
 combine list =
     combineHelp list []
-        |> Result.map List.reverse
+
 
 
 combineHelp : List (Result x a) -> List a -> Result x (List a)
@@ -160,7 +160,7 @@ combineHelp list acc =
                     Err x
 
         [] ->
-            Ok acc
+            Ok (List.reverse acc)
 
 
 {-| Map a function producing results on a list
