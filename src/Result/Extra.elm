@@ -155,8 +155,8 @@ Also known as `traverse` on lists.
 
 -}
 combineMap : (a -> Result x b) -> List a -> Result x (List b)
-combineMap f =
-    combine << List.map f
+combineMap f ls =
+    combine (List.map f ls)
 
 
 {-| Pull a result out of the _first_ element of a tuple
@@ -195,8 +195,8 @@ Also know as `sequence` on tuples.
 
 -}
 combineMapFirst : (a -> Result x b) -> ( a, c ) -> Result x ( b, c )
-combineMapFirst f =
-    combineFirst << Tuple.mapFirst f
+combineMapFirst f t =
+    combineFirst (Tuple.mapFirst f t)
 
 
 {-| Map a function producing results on the _second_ element of a tuple
@@ -209,8 +209,8 @@ Also know as `traverse` on tuples.
 
 -}
 combineMapSecond : (a -> Result x b) -> ( c, a ) -> Result x ( c, b )
-combineMapSecond f =
-    combineSecond << Tuple.mapSecond f
+combineMapSecond f t =
+    combineSecond (Tuple.mapSecond f t)
 
 
 {-| Map a function producing results on the _both_ elements of a tuple
@@ -223,8 +223,8 @@ Also know as `bitraverse` on tuples.
 
 -}
 combineMapBoth : (a -> Result x c) -> (b -> Result x d) -> ( a, b ) -> Result x ( c, d )
-combineMapBoth f g =
-    combineBoth << Tuple.mapBoth f g
+combineMapBoth f g t =
+    combineBoth (Tuple.mapBoth f g t)
 
 
 
